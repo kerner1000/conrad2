@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+the interface, main {@link calhoun.analysis.crf.Conrad} class, and solver for the Conrad engine.  The Conrad class is the main entry point for the engine, either 
+as an executable through it's <code>main</code> method or programmatically through it's public interface.  Very little goes on
+in the Conrad class, all real functionality is delegated out to the various beans which are configured in the model.  This includes
+the model itself, I/O handling, and even the training and inference algorithms.  This component approach allows Conrad to be very 
+easily configured for different problems and approaches.
+<p>
+The main things to understand in this class as the various FeatureManager interfaces if you plan to implement your own features, and the 
+various CRF... interfaces if you plan to reconfigure the engine or solver.	
+</p>
+</body>
+</html>
