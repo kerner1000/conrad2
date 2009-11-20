@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="inputHandler" class="calhoun.analysis.crf.io.InputHandlerDirectory">
+	<property name="inputReaders">
+		<map>
+			<entry>
+				<key><value>ref.fasta</value></key>
+				<bean class="calhoun.analysis.crf.io.FastaInput">
+				  	<property name="header" value="name"/>
+				  	<property name="sequence" value="ref"/>
+				</bean>
+			</entry>
+			<entry>
+				<key><value>tree.tre</value></key>
+				<bean class="calhoun.analysis.crf.io.AlignmentTree">
+				  	<property name="component" value="aln"/>
+				</bean>
+			</entry>
+			<entry>
+				<key><value>aln.fasta</value></key>
+				<bean class="calhoun.analysis.crf.io.FastaAlignmentInput">
+				  	<property name="component" value="aln"/>
+				</bean>
+			</entry>
+		</map>
+	</property>
+	<property name="hiddenSequenceFile" value="ref.gtf" />
+	<property name="hiddenStateReader">
+	  	<bean class="calhoun.analysis.crf.io.GTFInputInterval13"/>
+	</property>
+  </bean>
+  <bean id="outputHandler" class="calhoun.analysis.crf.io.OutputHandlerGeneCallStats">
+		<property name="inputHandler" ref="inputHandler"/>
+		<property name="manager" ref="model"/>
+  </bean>
+  <bean id="inference" class="calhoun.analysis.crf.solver.SemiMarkovViterbi">
+	<property name="cacheProcessor" ref="cache"/>
+  </bean>
+  <bean id="optimizer" class="calhoun.analysis.crf.solver.TwoPassOptimizer">
+	<property name="firstPass">
+  	  <bean class="calhoun.analysis.crf.solver.StandardOptimizer">
+  		<property name="objectiveFunction">
+	  		<bean class="calhoun.analysis.crf.solver.MaximumLikelihoodSemiMarkovGradient" >
+				<property name="cacheProcessor" ref="cache"/>
+  	  		</bean>
+  		</property>
+	  </bean>
+	</property>
+	<property name="secondPass">
+	  <bean class="calhoun.analysis.crf.solver.StandardOptimizer">
+		<property name="objectiveFunction">
+		  <bean class="calhoun.analysis.crf.solver.MaximumExpectedAccuracySemiMarkovGradient" >
+			<property name="cacheProcessor" ref="cache"/>
+			<property name="score">
+	  			<bean class="calhoun.analysis.crf.scoring.SimScoreStateAndExonBoundariesInt13"/>
+			</property>
+  	  	  </bean>
+		</property>
+	  </bean>
+	 </property>
+  </bean>
+    <bean id="cache" class="calhoun.analysis.crf.solver.CacheProcessorDeluxe">
+	<property name="lookbackArraySize" value="5000"/>
+	<property name="lookbackArrayFeatureSize" value="3"/>
+	<property name="ignoreInvalidTrainingData" value="true"/>
+	<property name="semiMarkovSetup">
+	<bean id="lengths" class="calhoun.analysis.crf.SemiMarkovSetup">
+		<property name="ignoreSemiMarkovSelfTransitions" value="true"/>
+		<property name="maxLengths">
+			<list>
+				<value>5000</value>
+				<value>5000</value>
+				<value>5000</value>
+				<value>5000</value>
+				<value>600</value>
+				<value>600</value>
+				<value>600</value>
+				<value>5000</value>
+				<value>5000</value>
+				<value>5000</value>
+				<value>600</value>
+				<value>600</value>
+				<value>600</value>
+			</list>
+		</property>
+				<property name="minLengths">
+			<list>
+				<value>18</value>
+				<value>5</value>
+				<value>5</value>
+				<value>5</value>
+				<value>15</value>
+				<value>15</value>
+				<value>15</value>
+				<value>5</value>
+				<value>5</value>
+				<value>5</value>
+				<value>15</value>
+				<value>15</value>
+				<value>15</value>
+			</list>
+		</property>
+	  </bean>
+	</property>
+  </bean>
+  <bean id="model" class="calhoun.analysis.crf.features.interval13.Interval13Model">
+        <property name="narrowBoundaries" value="true"/>
+	<property name="componentFeatures">
+	  <list>
+	  	  <!-- First, compute probability of hidden state sequences -->
+			<bean class="calhoun.analysis.crf.features.interval13.StateTransitionsInterval13">
+				<property name="inputComponent" value="ref"/>
+			</bean>
+			<bean class="calhoun.analysis.crf.features.interval13.StateLengthLogprobInterval13">
+				<property name="inputComponent" value="ref"/>
+				<property name="multipleFeatures" value="true"/>
+			</bean>
+
+			<!-- Second, restict to hidden state sequences that, given reference sequence observations, are legal -->
+			<bean class="calhoun.analysis.crf.features.interval13.GeneConstraintsInterval13">
+				<property name="inputComponent" value="ref"/>
+			</bean>
+			<!-- Third, copmute the probability of emitted ref sequenc egiven hidden state -->
+			<bean class="calhoun.analysis.crf.features.interval13.ReferenceBasePredictorInterval13">
+				<property name="inputComponent" value="ref"/>
+				<property name="multipleFeatures" value="true"/>
+			</bean>
+			<bean class="calhoun.analysis.crf.features.interval13.PWMInterval13" >
+				<property name="inputComponent" value="ref"/>
+				<property name="multipleFeatures" value="true"/>
+			</bean>
+			<bean class="calhoun.analysis.crf.features.interval13.PhylogeneticLogprobInterval13" >
+				<property name="inputComponent" value="aln"/>
+				<property name="multipleFeatures" value="true"/>
+			</bean>
+			<bean class="calhoun.analysis.crf.features.interval13.GapFeaturesInterval13" >
+				<property name="inputComponent" value="aln"/>
+			</bean>
+			<bean class="calhoun.analysis.crf.features.interval13.FootprintsInterval13" >
+				<property name="inputComponent" value="aln"/>
+			</bean>
+
+		</list>
+		</property>
+  </bean>
+</beans>
