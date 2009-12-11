@@ -3,19 +3,17 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/colt.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/dom4j.jar"/>
 	<classpathentry kind="lib" path="lib/LBFGS.jar"/>
 	<classpathentry kind="lib" path="lib/spring-1.2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jfreechart-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/jcommon-1.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.8.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/bioutils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/kerner-commons"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-1.5.0-sun-1.5.0.20"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache-commons"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/dom4j"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j-log4j"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
