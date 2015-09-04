@@ -332,7 +332,7 @@ public class RootedBinaryPhylogeneticTree implements Serializable {
 				Assert.a(btn.r == -1); // if no left child, then its a leaf and hence also no right child either.
 				String name = btn.n;
 				Assert.a(name != ""); // I require that each leaf node have a name.
-				Assert.a(!ret.contains(name)); // I want no repitition; if same species is listed in tree twice then fail here
+				Assert.a(!ret.contains(name)); // I want no repetition; if same species is listed in tree twice then fail here
 				ret.add(name);
 			}
 		}
